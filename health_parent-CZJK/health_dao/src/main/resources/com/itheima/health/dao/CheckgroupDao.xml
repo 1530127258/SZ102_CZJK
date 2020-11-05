@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itheima.health.dao.CheckgroupDao">
+
+
+    <!--    添加检查组-->
+    <insert id="add" parameterType="Checkgroup" keyProperty="id" useGeneratedKeys="true">
+        insert into t_checkgroup (code,name,helpCode,sex,remark,attention)
+        values (#{code},#{name},#{helpCode},#{sex},#{remark},#{attention})
+    </insert>
+
+
+    <!--添加检查组检查项关系-->
+    <insert id="addCheckGroupCheckItem" parameterType="int">
+        insert into t_checkgroup_checkitem (checkgroup_id,checkitem_id)
+        values(#{checkGroupId},#{checkitemId})
+    </insert>
+
+
+    <!--    分页检查组-->
+    <select id="findPage" parameterType="String" resultType="CheckGroup">
+
+        select * from t_checkgroup
+        <if test="value != null and value.length > 0">
+            where code like #{value} or name like #{value}
+            or helpCode like #{value}
+
+        </if>
+    </select>
+
+
+    <!--    根据ID查-->
+    <select id="findById" parameterType="int" resultType="CheckGroup">
+
+        select * from t_checkgroup where id = #{id}
+
+    </select>
+
+    <!--通过检查组id查询选中的检查项id集合-->
+    <select id="findCheckItemIdsByCheckGroupId" resultType="int">
+
+select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{id}
+
+
+    </select>
+
+
+    <!--    查看所有检查组-->
+    <select id="findAll" resultType="CheckGroup">
+
+        select * from t_checkgroup;
+
+    </select>
+
+<!--    查询检查组/项关系-->
+    <select id="findByidCheckitemCheckGroup" parameterType="int" resultType="int">
+
+        select count(1) from t_checkgroup_checkitem where checkgroup_id = #{id}
+
+    </select>
+
+
+<!--    删除检查组-->
+    <delete id="deleteById" parameterType="int">
+
+        delete from t_checkgroup where id = #{id};
+
+    </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

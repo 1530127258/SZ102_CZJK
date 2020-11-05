@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itheima.health.dao.OrderDao">
+
+    <!--添加已预约后的信息-->
+    <insert id="add" parameterType="order">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_order(member_id,orderDate,orderType,orderStatus,setmeal_id)
+        values (#{memberId},#{orderDate},#{orderType},#{orderStatus},#{setmealId})
+    </insert>
+
+
+    <!--今日预约数-->
+    <select id="findOrderCountByDate" parameterType="string" resultType="int">
+-- 获取当前日期传参 条件是数据库表的日期等于当前日期  查询的是所有的id的数目
+        select count(id) from t_order where orderDate = #{value};
+
+    </select>
+
+
+    <!--今日到诊数-->
+    <select id="findVisitsCountByDate" parameterType="string" resultType="int">
+--  获得当前日期 通过日期查询字段 orderStatus 是否已到诊,条件是当前日期和已到诊 查询结果是已到诊的id所有的数目
+        select count(id) from t_order where orderDate = #{value} and orderStatus = '已到诊';
+
+    </select>
+
+
+    <!--本周预约数-->
+    <select id="findOrderCountBetweenDate" parameterType="string" resultType="int">
+-- 本周范围是 周一至周天的日期 这是条件   结果集是所有的数目
+        select count(1) from t_order where orderDate between #{startDate} and #{endDate}
+
+    </select>
+
+
+    <!--本周到诊数 TODO 为什么是大于等于 不就获取到其他星期了么 因为到诊数只可能是当前日期或以前-->
+    <select id="findVisitsCountAfterDate" parameterType="string" resultType="int">
+--
+        select count(id) from t_order where orderDate &gt;= #{value} and orderStatus = '已到诊';
+
+    </select>
+
+
+
+
+
+
+    <!--热门套餐-->
+    <select id="findHotSetmeal" resultType="map">
+        select s.name,t.value setmeal_count,t.value/t2.total proportion from
+            t_setmeal s,
+            (select setmeal_id,count(1) value from t_order group by setmeal_id) t,(select count(1) total from t_order)t2
+
+            where
+
+            s.id = t.setmeal_id
+
+            order by t.value desc
+
+            limit 0,4;
+
+
+    </select>
+
+
+
+
+    <!---->
+
+</mapper>

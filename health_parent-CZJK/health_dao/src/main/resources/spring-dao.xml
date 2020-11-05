@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--    引入jdbc配置文件  TODO 确认文件名 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+
+    <!--  数据源  TODO 查看属性名是否正确-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="username" value="${jdbc.username}"/>
+    </bean>
+
+
+    <!--spring和mybatis整合的工厂bean-->
+    <!--TODO 这里引入的文件要查看是否存在-->
+    <!--2.配置sqlSessionFactoryBean-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+
+        <!--配置数据源-->
+        <property name="dataSource" ref="dataSource"/>
+
+        <!--别名配置 TODO 【注意】包名的拼写是否正确  实体类包路径-->
+        <property name="typeAliasesPackage" value="com.itheima.health.pojo"/>
+
+        <!--   TODO 引入mybatis其余的配置文件     -->
+        <property name="configLocation" value="classpath:sqlMapConfig.xml"/>
+    </bean>
+
+
+    <!--批量扫描接口生成代理对象-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- TODO 注意 包名的拼写是否正确-->
+        <!--TODO 指定接口所在的包路径-->
+        <property name="basePackage" value="com.itheima.health.dao"/>
+    </bean>
+
+
+</beans>
+
+

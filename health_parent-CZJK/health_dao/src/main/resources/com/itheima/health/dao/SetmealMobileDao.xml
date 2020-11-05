@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itheima.health.dao.SetmealMobileDao">
+
+
+    <!--    查所有-->
+    <select id="findAll" resultType="setmeal">
+
+        select * from t_setmeal;
+
+    </select>
+
+
+<!--    查询套餐的所有信息-->
+    <select id="findDetailById" parameterType="int" resultType="setmeal">
+
+        select * from t_setmeal where id = #{id}
+
+    </select>
+
+    <!--查询套餐下的检查组-->
+    <select id="findByIdSetmeal_CheckGroup" parameterType="int" resultType="checkgroup">
+
+        select * from t_checkgroup where id in (
+
+        select checkgroup_id from t_setmeal_checkgroup where checkgroup_id = #{id}
+
+        )
+
+    </select>
+
+
+
+    <!--    查询检查组下所有检查项-->
+    <select id="findCheckItemByCheckGroupId" parameterType="int" resultType="checkitem">
+
+        select * from t_checkitem where id in (
+
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{id}
+
+        )
+
+    </select>
+
+
+
+</mapper>
